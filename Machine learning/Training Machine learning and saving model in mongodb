@@ -1,0 +1,414 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Using TensorFlow backend.\n"
+     ]
+    }
+   ],
+   "source": [
+    "from __future__ import print_function\n",
+    "\n",
+    "import numpy as np\n",
+    "\n",
+    "from keras.callbacks import EarlyStopping\n",
+    "from keras.datasets import cifar10\n",
+    "from keras.models import Sequential\n",
+    "from keras.layers.core import Dense, Dropout, Flatten\n",
+    "from keras.layers.convolutional import Conv2D\n",
+    "from keras.optimizers import Adam\n",
+    "from keras.layers.pooling import MaxPooling2D\n",
+    "from keras.utils import to_categorical"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "np.random.seed(1000)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "(X_train, Y_train), (X_test, Y_test) = cifar10.load_data()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "xgb = Sequential()\n",
+    "\n",
+    "xgb.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(32, 32, 3)))\n",
+    "xgb.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))\n",
+    "xgb.add(MaxPooling2D(pool_size=(2, 2)))\n",
+    "xgb.add(Dropout(0.25))\n",
+    "xgb.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))\n",
+    "xgb.add(MaxPooling2D(pool_size=(2, 2)))\n",
+    "xgb.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))\n",
+    "xgb.add(MaxPooling2D(pool_size=(2, 2)))\n",
+    "xgb.add(Dropout(0.25))\n",
+    "xgb.add(Flatten())\n",
+    "xgb.add(Dense(1024, activation='relu'))\n",
+    "xgb.add(Dropout(0.5))\n",
+    "xgb.add(Dense(10, activation='softmax'))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "xgb.compile(loss='categorical_crossentropy',\n",
+    "                  optimizer=Adam(lr=0.0001, decay=1e-6),\n",
+    "                  metrics=['accuracy'])\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Train on 50000 samples, validate on 10000 samples\n",
+      "Epoch 1/250\n",
+      "50000/50000 [==============================] - 72s 1ms/step - loss: 1.9828 - accuracy: 0.2619 - val_loss: 1.7172 - val_accuracy: 0.3818\n",
+      "Epoch 2/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 1.6579 - accuracy: 0.3898 - val_loss: 1.5336 - val_accuracy: 0.4414\n",
+      "Epoch 3/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 1.5074 - accuracy: 0.4500 - val_loss: 1.4007 - val_accuracy: 0.4904\n",
+      "Epoch 4/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 1.4134 - accuracy: 0.4867 - val_loss: 1.3127 - val_accuracy: 0.5330\n",
+      "Epoch 5/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 1.3452 - accuracy: 0.5153 - val_loss: 1.2466 - val_accuracy: 0.5533\n",
+      "Epoch 6/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 1.2784 - accuracy: 0.5422 - val_loss: 1.1808 - val_accuracy: 0.5835\n",
+      "Epoch 7/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 1.2300 - accuracy: 0.5609 - val_loss: 1.1394 - val_accuracy: 0.5986\n",
+      "Epoch 8/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 1.1833 - accuracy: 0.5813 - val_loss: 1.1007 - val_accuracy: 0.6138\n",
+      "Epoch 9/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 1.1408 - accuracy: 0.5949 - val_loss: 1.0748 - val_accuracy: 0.6245\n",
+      "Epoch 10/250\n",
+      "50000/50000 [==============================] - 77s 2ms/step - loss: 1.1121 - accuracy: 0.6085 - val_loss: 1.0412 - val_accuracy: 0.6355\n",
+      "Epoch 11/250\n",
+      "50000/50000 [==============================] - 78s 2ms/step - loss: 1.0751 - accuracy: 0.6204 - val_loss: 1.0044 - val_accuracy: 0.6518\n",
+      "Epoch 12/250\n",
+      "50000/50000 [==============================] - 81s 2ms/step - loss: 1.0464 - accuracy: 0.6335 - val_loss: 0.9770 - val_accuracy: 0.6599\n",
+      "Epoch 13/250\n",
+      "50000/50000 [==============================] - 82s 2ms/step - loss: 1.0211 - accuracy: 0.6413 - val_loss: 0.9556 - val_accuracy: 0.6660\n",
+      "Epoch 14/250\n",
+      "50000/50000 [==============================] - 75s 1ms/step - loss: 0.9933 - accuracy: 0.6515 - val_loss: 0.9382 - val_accuracy: 0.6727\n",
+      "Epoch 15/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.9686 - accuracy: 0.6610 - val_loss: 0.9500 - val_accuracy: 0.6699\n",
+      "Epoch 16/250\n",
+      "50000/50000 [==============================] - 72s 1ms/step - loss: 0.9468 - accuracy: 0.6688 - val_loss: 0.8911 - val_accuracy: 0.6868\n",
+      "Epoch 17/250\n",
+      "50000/50000 [==============================] - 72s 1ms/step - loss: 0.9272 - accuracy: 0.6740 - val_loss: 0.8887 - val_accuracy: 0.6919\n",
+      "Epoch 18/250\n",
+      "50000/50000 [==============================] - 72s 1ms/step - loss: 0.9055 - accuracy: 0.6835 - val_loss: 0.8634 - val_accuracy: 0.6966\n",
+      "Epoch 19/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.8891 - accuracy: 0.6884 - val_loss: 0.8614 - val_accuracy: 0.7007\n",
+      "Epoch 20/250\n",
+      "50000/50000 [==============================] - 72s 1ms/step - loss: 0.8697 - accuracy: 0.6967 - val_loss: 0.8336 - val_accuracy: 0.7082\n",
+      "Epoch 21/250\n",
+      "50000/50000 [==============================] - 79s 2ms/step - loss: 0.8507 - accuracy: 0.7028 - val_loss: 0.8365 - val_accuracy: 0.7094\n",
+      "Epoch 22/250\n",
+      "50000/50000 [==============================] - 83s 2ms/step - loss: 0.8379 - accuracy: 0.7062 - val_loss: 0.8110 - val_accuracy: 0.7157\n",
+      "Epoch 23/250\n",
+      "50000/50000 [==============================] - 78s 2ms/step - loss: 0.8191 - accuracy: 0.7149 - val_loss: 0.8033 - val_accuracy: 0.7154\n",
+      "Epoch 24/250\n",
+      "50000/50000 [==============================] - 77s 2ms/step - loss: 0.8049 - accuracy: 0.7196 - val_loss: 0.7897 - val_accuracy: 0.7253\n",
+      "Epoch 25/250\n",
+      "50000/50000 [==============================] - 83s 2ms/step - loss: 0.7939 - accuracy: 0.7205 - val_loss: 0.7764 - val_accuracy: 0.7309\n",
+      "Epoch 26/250\n",
+      "50000/50000 [==============================] - 84s 2ms/step - loss: 0.7802 - accuracy: 0.7255 - val_loss: 0.7645 - val_accuracy: 0.7321\n",
+      "Epoch 27/250\n",
+      "50000/50000 [==============================] - 77s 2ms/step - loss: 0.7665 - accuracy: 0.7315 - val_loss: 0.7553 - val_accuracy: 0.7388\n",
+      "Epoch 28/250\n",
+      "50000/50000 [==============================] - 77s 2ms/step - loss: 0.7572 - accuracy: 0.7354 - val_loss: 0.7526 - val_accuracy: 0.7405\n",
+      "Epoch 29/250\n",
+      "50000/50000 [==============================] - 75s 2ms/step - loss: 0.7371 - accuracy: 0.7419 - val_loss: 0.7457 - val_accuracy: 0.7397\n",
+      "Epoch 30/250\n",
+      "50000/50000 [==============================] - 76s 2ms/step - loss: 0.7281 - accuracy: 0.7449 - val_loss: 0.7317 - val_accuracy: 0.7477\n",
+      "Epoch 31/250\n",
+      "50000/50000 [==============================] - 76s 2ms/step - loss: 0.7178 - accuracy: 0.7483 - val_loss: 0.7348 - val_accuracy: 0.7449\n",
+      "Epoch 32/250\n",
+      "50000/50000 [==============================] - 75s 2ms/step - loss: 0.7050 - accuracy: 0.7530 - val_loss: 0.7205 - val_accuracy: 0.7500\n",
+      "Epoch 33/250\n",
+      "50000/50000 [==============================] - 76s 2ms/step - loss: 0.6934 - accuracy: 0.7583 - val_loss: 0.7295 - val_accuracy: 0.7490\n",
+      "Epoch 34/250\n",
+      "50000/50000 [==============================] - 75s 1ms/step - loss: 0.6842 - accuracy: 0.7613 - val_loss: 0.7118 - val_accuracy: 0.7538\n",
+      "Epoch 35/250\n",
+      "50000/50000 [==============================] - 74s 1ms/step - loss: 0.6777 - accuracy: 0.7627 - val_loss: 0.6947 - val_accuracy: 0.7593\n",
+      "Epoch 36/250\n",
+      "50000/50000 [==============================] - 75s 1ms/step - loss: 0.6681 - accuracy: 0.7665 - val_loss: 0.7015 - val_accuracy: 0.7596\n",
+      "Epoch 37/250\n",
+      "50000/50000 [==============================] - 76s 2ms/step - loss: 0.6532 - accuracy: 0.7692 - val_loss: 0.6879 - val_accuracy: 0.7604\n",
+      "Epoch 38/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.6441 - accuracy: 0.7744 - val_loss: 0.6857 - val_accuracy: 0.7635\n",
+      "Epoch 39/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.6386 - accuracy: 0.7760 - val_loss: 0.6803 - val_accuracy: 0.7652\n",
+      "Epoch 40/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.6254 - accuracy: 0.7792 - val_loss: 0.6718 - val_accuracy: 0.7675\n",
+      "Epoch 41/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.6171 - accuracy: 0.7854 - val_loss: 0.6874 - val_accuracy: 0.7611\n",
+      "Epoch 42/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.6117 - accuracy: 0.7866 - val_loss: 0.6767 - val_accuracy: 0.7662\n",
+      "Epoch 43/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.6010 - accuracy: 0.7913 - val_loss: 0.6671 - val_accuracy: 0.7694\n",
+      "Epoch 44/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.5922 - accuracy: 0.7925 - val_loss: 0.6643 - val_accuracy: 0.7705\n",
+      "Epoch 45/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.5879 - accuracy: 0.7936 - val_loss: 0.6574 - val_accuracy: 0.7739\n",
+      "Epoch 46/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.5745 - accuracy: 0.7991 - val_loss: 0.6511 - val_accuracy: 0.7758\n",
+      "Epoch 47/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.5689 - accuracy: 0.8015 - val_loss: 0.6544 - val_accuracy: 0.7727\n",
+      "Epoch 48/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.5645 - accuracy: 0.8000 - val_loss: 0.6589 - val_accuracy: 0.7724\n",
+      "Epoch 49/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.5567 - accuracy: 0.8050 - val_loss: 0.6429 - val_accuracy: 0.7810\n",
+      "Epoch 50/250\n",
+      "50000/50000 [==============================] - 73s 1ms/step - loss: 0.5504 - accuracy: 0.8063 - val_loss: 0.6462 - val_accuracy: 0.7752\n",
+      "Epoch 51/250\n",
+      "50000/50000 [==============================] - 74s 1ms/step - loss: 0.5377 - accuracy: 0.8087 - val_loss: 0.6433 - val_accuracy: 0.7775\n",
+      "Epoch 52/250\n",
+      "50000/50000 [==============================] - 75s 1ms/step - loss: 0.5361 - accuracy: 0.8103 - val_loss: 0.6305 - val_accuracy: 0.7816\n",
+      "Epoch 53/250\n",
+      "50000/50000 [==============================] - 76s 2ms/step - loss: 0.5256 - accuracy: 0.8145 - val_loss: 0.6383 - val_accuracy: 0.7827\n",
+      "Epoch 54/250\n",
+      "50000/50000 [==============================] - 75s 2ms/step - loss: 0.5211 - accuracy: 0.8166 - val_loss: 0.6411 - val_accuracy: 0.7756\n",
+      "Epoch 55/250\n",
+      "50000/50000 [==============================] - 75s 1ms/step - loss: 0.5112 - accuracy: 0.8189 - val_loss: 0.6428 - val_accuracy: 0.7788\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "<keras.callbacks.callbacks.History at 0x7f8668056c90>"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "xgb.fit(X_train / 255.0, to_categorical(Y_train),\n",
+    "              batch_size=128,\n",
+    "              shuffle=True,\n",
+    "              epochs=250,\n",
+    "              validation_data=(X_test / 255.0, to_categorical(Y_test)),\n",
+    "              callbacks=[EarlyStopping(min_delta=0.001, patience=3)])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def save_model_to_db(model, client, db, dbconnection, model_name):\n",
+    "    import pickle\n",
+    "    import time\n",
+    "    import pymongo\n",
+    "    #pickling the model\n",
+    "    pickled_model = pickle.dumps(model)\n",
+    "    \n",
+    "    #saving model to mongoDB\n",
+    "    # creating connection\n",
+    "    myclient = pymongo.MongoClient(client)\n",
+    "    \n",
+    "    #creating database in mongodb\n",
+    "    mydb = myclient[db]\n",
+    "    \n",
+    "    #creating collection\n",
+    "    mycon = mydb[dbconnection]\n",
+    "    info = mycon.insert_one({model_name: pickled_model, 'name': model_name, 'created_time':time.time()})\n",
+    "    print(info.inserted_id, ' saved with this id successfully!')\n",
+    "    \n",
+    "    details = {\n",
+    "        'inserted_id':info.inserted_id,\n",
+    "        'model_name':model_name,\n",
+    "        'created_time':time.time()\n",
+    "    }\n",
+    "    print(details)\n",
+    "    \n",
+    "    return details"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pymongo\n",
+    "def load_saved_model_from_db(model_name, client, db, dbconnection):\n",
+    "    json_data = {}\n",
+    "    \n",
+    "    #saving model to mongoDB\n",
+    "    # creating connection\n",
+    "    myclient = pymongo.MongoClient(client)\n",
+    "    \n",
+    "    #creating database in mongodb\n",
+    "    mydb = myclient[db]\n",
+    "    \n",
+    "    #creating collection\n",
+    "    mycon = mydb[dbconnection]\n",
+    "    data = mycon.find({'name': model_name})\n",
+    "    \n",
+    "    \n",
+    "    for i in data:\n",
+    "        json_data = i\n",
+    "    #fetching model from db\n",
+    "    pickled_model = json_data[model_name]\n",
+    "    \n",
+    "    return pickle.loads(pickled_model)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "5eaabe9bbfdb60940486afc8  saved with this id successfully!\n",
+      "{'inserted_id': ObjectId('5eaabe9bbfdb60940486afc8'), 'model_name': 'myxgb', 'created_time': 1588248219.1888342}\n"
+     ]
+    }
+   ],
+   "source": [
+    "details = save_model_to_db(model = xgb, client ='mongodb://localhost:27017/', db = 'mydatabase', \n",
+    "                 dbconnection = 'customers', model_name = 'myxgb')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "application/javascript": [
+       "\n",
+       "        if (window._pyforest_update_imports_cell) { window._pyforest_update_imports_cell('import pickle'); }\n",
+       "    "
+      ],
+      "text/plain": [
+       "<IPython.core.display.Javascript object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "xgb  = load_saved_model_from_db(model_name = details['model_name'], client = 'mongodb://localhost:27017/', \n",
+    "                         db = 'mydatabase', dbconnection = 'customers')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "10000/10000 [==============================] - 3s 292us/step\n"
+     ]
+    }
+   ],
+   "source": [
+    "\n",
+    "\n",
+    "scores = xgb.evaluate(X_test / 255.0, to_categorical(Y_test))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Loss: 0.643\n",
+      "Accuracy: 0.779\n"
+     ]
+    }
+   ],
+   "source": [
+    "print('Loss: %.3f' % scores[0])\n",
+    "print('Accuracy: %.3f' % scores[1])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import tensorflow as tf\n",
+    "\n",
+    "from keras.models import load_model\n",
+    "\n",
+    "xgb.save('model_vgg19.h5')\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
