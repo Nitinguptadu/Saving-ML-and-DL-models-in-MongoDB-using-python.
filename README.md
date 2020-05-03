@@ -24,6 +24,8 @@ for starting service of mongodb after install in linix
 
 sudo service mongod start
 
+* * * * *  conda activate base; python /home/nitin/Desktop/cro/cro.py >> test.out
+
 
 for checking on which local port mongodb is running 
 
